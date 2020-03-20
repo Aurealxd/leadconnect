@@ -7,7 +7,15 @@ function editComment (buttonNumber) {
     let commentFormText = document.createElement("input");
     commentFormText.setAttribute("type", "text");
     commentFormText.setAttribute("id", "commentFormText");
+    commentFormText.setAttribute("value", document.querySelector('h2[id=showComment' + buttonNumber + ']').innerHTML.substring(9));
+    commentFormText.select();
     
+    /*
+    commentFormText.onclick = function () {
+        this.select();
+    }
+    */
+
     let commentFormSave = document.createElement("input");
     commentFormSave.setAttribute("type", "button");
     commentFormSave.setAttribute("id", "commentFormSave");
@@ -81,4 +89,9 @@ function editComment (buttonNumber) {
         }, 2500);
     }
     
+    commentForm.addEventListener('keydown', function(event) {
+        if(event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
 }
