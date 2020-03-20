@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>{{type}} report</title>
+</head>
+<body>
+<h1>{{systemTime}}</h1>
+<h1 id="yourtime"></h1>
+<script>
+    document.querySelector("#yourtime").innerHTML = "( In your timezone:<br> " + new Date(`{{systemTime}}`).toString() + " )";
+</script>
+
+{{#each sites}}
+    <h2>{{id}}. Checking {{name}} {{url}}</h2>
+    <h2>(last check: {{lastCheck}})</h2>
+    <h2>{{#if comment}}comment: {{comment}}{{/if}}</h2>
+    {{#if error}}<h2>{{error}}</h2>{{/if}}
+    {{#if ignoreResult}}<h2>(RESULT IS IGNORED)</h2>{{/if}}
+    <div>
+        {{#if closedImage}}
+            <img {{#if ../imageResize}}{{{../imageResize}}}{{/if}} src="/report/{{closedImage}}">
+        {{/if}}
+        {{#if openedImage}}
+            <img {{#if ../imageResize}}{{{../imageResize}}}{{/if}} src="/report/{{openedImage}}">
+        {{/if}}
+    </div>
+{{/each}}
+
+</body>
+</html>
