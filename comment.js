@@ -21,7 +21,12 @@ function editComment (buttonNumber) {
     commentFormSave.onclick = function () {
         let msg = {
             comment: document.querySelector('input[id="commentFormText"]').value
-          };
+            };
+        
+        let h2Id = 'showComment' + buttonNumber;
+        document.querySelector('h2[id=' + h2Id + ']').innerHTML = 'comment: ' + msg.comment;
+        console.log('Comment from input =', msg.comment);
+        
         let url = 'https://sitecheck.leadcm.com/api/v1/setComment/' + buttonNumber;
         fetch(url,
             {
@@ -30,8 +35,25 @@ function editComment (buttonNumber) {
                 headers: {'Content-Type': 'application/json'}
             }
         )
-        .then(response => response.json())
-        .then(console.log);
+        .then(  
+            function(response) {
+                if (response.ok) {
+                    console.log('Response status =', response.status);
+                    response.json().then(function(data) {
+                        console.log('Comment from response =', data.site.comment);
+                        if (data.site.comment == msg.comment) {
+                            console.log('Comments from response and input are equal, no need to update');
+                        } else {
+                            console.log('Responded comment differs from inputed, comment text updated');
+                            document.querySelector('h2[id=' + h2Id + ']').innerHTML = 'comment: ' + data.site.comment;
+                        }
+                    });
+                    showMessage("Comment saved", "green");
+                } else {
+                    showMessage("Response error", "red");
+                }
+        });
+
         document.body.removeChild(commentForm);
     }
 
@@ -47,21 +69,16 @@ function editComment (buttonNumber) {
 
     document.querySelector('button[id=' + buttonId + ']').after(commentForm);
     document.querySelector('input[id="commentFormText"]').focus();
-}
 
-/*
-function placeButtons () {
-    let h2_tags = document.querySelectorAll('h2');
-    let h2_strings = [];
-    let stringToFind = "Checking";
-    let j = 0;
-    for(var i = 0; i<h2_tags.length; i++) {
-        if (h2_tags[i].innerHTML.indexOf(stringToFind) === 4) {
-            h2_strings[j] = h2_tags[i].innerHTML;
-            j++;
-            h2_tags[++i].innerHTML = '<button onclick="editComment()" id="editCommentBtn">Edit comment</button>';
-        }
+    function showMessage(infoMessage, infoColor) {
+        let messageSpan = document.createElement("span");
+        messageSpan.innerHTML = infoMessage;
+        messageSpan.style.paddingLeft = "10px";
+        messageSpan.style.color = infoColor;
+        document.querySelector('button[id=' + buttonId + ']').after(messageSpan);
+        setTimeout(function(){
+            document.body.removeChild(messageSpan);
+        }, 2500);
     }
-    console.log(h2_strings);
+    
 }
-*/
